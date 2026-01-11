@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
-using CheckService.Domain;
+using CardService.Domain;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
 
-namespace CheckService.Infrastructure.Producers
+namespace CardService.Infrastructure.Producers
 {
     public class PaymentStatusProducer
     {
@@ -47,7 +47,7 @@ namespace CheckService.Infrastructure.Producers
         }
 
         public async Task PublishFailureStatusAsync(
-            CheckPaymentRequest request,
+            CardPaymentRequest request,
             string errorMessage,
             CancellationToken stoppingToken)
         {
