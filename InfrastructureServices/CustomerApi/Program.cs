@@ -1,9 +1,13 @@
 using CustomerApi.Models;
+using CustomerApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
+
+// Register repository
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 var app = builder.Build();
 
@@ -15,50 +19,76 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// In-memory customer database (for demo purposes)
-var customers = new Dictionary<Guid, Customer>
+// GET: Retrieve customer by ID
+app.MapGet("/api/customers/{customerId:guid}", async (Guid customerId, ICustomerRepository repository) =>
 {
-    {
-        Guid.Parse("11111111-1111-1111-1111-111111111111"),
-        new Customer
-        {
-            CustomerId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-            Email = "john.doe@example.com",
-            Name = "John Doe",
-            Phone = "+1-555-0101"
-        }
-    },
-    {
-        Guid.Parse("22222222-2222-2222-2222-222222222222"),
-        new Customer
-        {
-            CustomerId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-            Email = "jane.smith@example.com",
-            Name = "Jane Smith",
-            Phone = "+1-555-0102"
-        }
-    },
-    {
-        Guid.Parse("33333333-3333-3333-3333-333333333333"),
-        new Customer
-        {
-            CustomerId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-            Email = "bob.johnson@example.com",
-            Name = "Bob Johnson",
-            Phone = "+1-555-0103"
-        }
-    }
-};
+    var customer = await repository.GetByIdAsync(customerId);
 
-app.MapGet("/api/customers/{customerId:guid}", (Guid customerId) =>
-{
-    if (customers.TryGetValue(customerId, out var customer))
+    if (customer == null)
     {
-        return Results.Ok(customer);
+        return Results.NotFound(new { message = "Customer not found" });
     }
 
-    return Results.NotFound(new { message = "Customer not found" });
+    return Results.Ok(customer);
 })
 .WithName("GetCustomer");
+
+// GET: Retrieve all customers
+app.MapGet("/api/customers", async (ICustomerRepository repository) =>
+{
+    var customers = await repository.GetAllAsync();
+    return Results.Ok(customers);
+})
+.WithName("GetAllCustomers");
+
+// POST: Create a new customer
+app.MapPost("/api/customers", async (Customer customer, ICustomerRepository repository) =>
+{
+    try
+    {
+        var createdCustomer = await repository.CreateAsync(customer);
+        return Results.Created($"/api/customers/{createdCustomer.CustomerId}", createdCustomer);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(
+            detail: ex.Message,
+            statusCode: StatusCodes.Status500InternalServerError);
+    }
+})
+.WithName("CreateCustomer");
+
+// PUT: Update an existing customer
+app.MapPut("/api/customers/{customerId:guid}", async (Guid customerId, Customer customer, ICustomerRepository repository) =>
+{
+    if (customerId != customer.CustomerId)
+    {
+        return Results.BadRequest(new { message = "Customer ID mismatch" });
+    }
+
+    var updated = await repository.UpdateAsync(customer);
+
+    if (!updated)
+    {
+        return Results.NotFound(new { message = "Customer not found" });
+    }
+
+    return Results.NoContent();
+})
+.WithName("UpdateCustomer");
+
+// DELETE: Delete a customer
+app.MapDelete("/api/customers/{customerId:guid}", async (Guid customerId, ICustomerRepository repository) =>
+{
+    var deleted = await repository.DeleteAsync(customerId);
+
+    if (!deleted)
+    {
+        return Results.NotFound(new { message = "Customer not found" });
+    }
+
+    return Results.NoContent();
+})
+.WithName("DeleteCustomer");
 
 app.Run();
