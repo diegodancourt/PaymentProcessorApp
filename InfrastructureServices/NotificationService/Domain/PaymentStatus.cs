@@ -1,4 +1,4 @@
-﻿namespace CardService.Domain;
+namespace NotificationService.Domain;
 
 public class PaymentStatus
 {

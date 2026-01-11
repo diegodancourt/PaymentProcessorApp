@@ -1,4 +1,4 @@
-﻿namespace CardService.Domain;
+namespace LedgerService.Domain;
 
 public class PaymentStatus
 {

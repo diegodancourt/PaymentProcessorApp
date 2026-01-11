@@ -1,4 +1,4 @@
-namespace CardService;
+namespace LedgerService;
 
 public class KafkaSettings
 {
@@ -6,9 +6,7 @@ public class KafkaSettings
 
     public required string BootstrapServers { get; init; }
     public required string GroupId { get; init; }
-    public required string ConsumerTopic { get; init; }
-    public required string ProducerTopic { get; init; }
+    public required string Topic { get; init; }
     public bool AutoOffsetReset { get; init; } = true;
     public bool EnableAutoCommit { get; init; } = false;
-    public int ProducerTimeoutMs { get; init; } = 5000;
 }

@@ -1,29 +1,27 @@
 ﻿using System.Text.Json;
-using CheckService.Domain;
-using CheckService.Infrastructure.Producers;
+using CardService.Domain;
+using CardService.Infrastructure.Producers;
 using Confluent.Kafka;
 
-namespace CheckService.Infrastructure.Consumers
+namespace CardService.Infrastructure.Consumers
 {
     public class PaymentRequestConsumer
     {
         private readonly ILogger<PaymentRequestConsumer> _logger;
         private readonly IConsumer<Ignore, string> _consumer;
         private readonly PaymentStatusProducer _paymentStatusProducer;
-        private readonly CheckReader.Services.CheckReader _checkReader;
 
         public PaymentRequestConsumer(ILogger<PaymentRequestConsumer> logger, IConsumer<Ignore, string> consumer,
-            PaymentStatusProducer paymentStatusProducer, CheckReader.Services.CheckReader checkReader)
+            PaymentStatusProducer paymentStatusProducer)
         {
             _logger = logger;
             _consumer = consumer;
             _paymentStatusProducer = paymentStatusProducer;
-            _checkReader = checkReader;
         }
 
         public async Task ConsumeMessageAsync(CancellationToken stoppingToken)
         {
-            CheckPaymentRequest? request = null;
+            CardPaymentRequest? request = null;
             ConsumeResult<Ignore, string>? consumeResult = null;
 
             try
@@ -37,44 +35,29 @@ namespace CheckService.Infrastructure.Consumers
 
                 var messageJson = consumeResult.Message.Value;
                 _logger.LogInformation(
-                    "Received check payment request. Partition: {Partition}, Offset: {Offset}",
+                    "Received card payment request. Partition: {Partition}, Offset: {Offset}",
                     consumeResult.Partition.Value,
                     consumeResult.Offset.Value);
 
-                request = JsonSerializer.Deserialize<CheckPaymentRequest>(messageJson);
-
+                request = JsonSerializer.Deserialize<CardPaymentRequest>(messageJson);
                 if (request == null)
                 {
-                    _logger.LogWarning("Failed to deserialize check payment request");
+                    _logger.LogError("Deserialized CardPaymentRequest is null");
+                    _consumer.Commit(consumeResult);
                     return;
                 }
 
-                _logger.LogInformation(
-                    "Processing check payment - PaymentId: {PaymentId}, CustomerId: {CustomerId}, ImageSize: {Size} bytes",
-                    request.PaymentId,
-                    request.CustomerId,
-                    request.ImageData.Length);
-
-                var check = await _checkReader.ReadCheckAsync(request.ImageData);
-
-                _logger.LogInformation(
-                    "Check processed - PaymentId: {PaymentId}, CheckNumber: {CheckNumber}, Amount: {Amount}, Payee: {Payee}",
-                    request.PaymentId,
-                    check.Micr.CheckNumber,
-                    check.Amount.Value,
-                    check.Payee.Name);
-
-                //TODO: Send check data to external payment processor API
+                //TODO: Send to Card Processing API --Here we will use the CardToken
 
                 // Create and publish PaymentStatus
                 var paymentStatus = new PaymentStatus
                 {
                     PaymentId = request.PaymentId,
                     CustomerId = request.CustomerId,
-                    Amount = check.Amount.Value,
+                    Amount = request.Amount,
                     Status = "Success",
                     Timestamp = DateTime.UtcNow,
-                    PaymentMethod = "Check"
+                    PaymentMethod = "Card"
                 };
 
                 await _paymentStatusProducer.PublishPaymentStatusAsync(paymentStatus, stoppingToken);
@@ -91,7 +74,8 @@ namespace CheckService.Infrastructure.Consumers
 
                 if (request != null)
                 {
-                    await _paymentStatusProducer.PublishFailureStatusAsync(request, "Deserialization error", stoppingToken);
+                    await _paymentStatusProducer.PublishFailureStatusAsync(request, "Deserialization error",
+                        stoppingToken);
                 }
             }
             catch (Exception ex)
