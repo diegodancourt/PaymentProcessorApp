@@ -16,13 +16,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardService", "PaymentConsu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckService.Tests", "PaymentConsumers\CheckService.Tests\CheckService.Tests.csproj", "{D4F7B3C1-8E2A-4D9C-A7F1-3C5E8D2F9A4B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InfrastructureServices", "InfrastructureServices", "{46AA9E2C-4DE1-4410-993B-BB42808D321A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "NotificationService\NotificationService.csproj", "{8A5C607A-DB3F-4483-8622-F6A34415AACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "InfrastructureServices\NotificationService\NotificationService.csproj", "{8A5C607A-DB3F-4483-8622-F6A34415AACF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerService", "LedgerService\LedgerService.csproj", "{5EA322F7-FCB8-44B8-860E-61C571CAD28A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerService", "InfrastructureServices\LedgerService\LedgerService.csproj", "{5EA322F7-FCB8-44B8-860E-61C571CAD28A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.Tests", "InfrastructureServices\NotificationService.Tests\NotificationService.Tests.csproj", "{A8F9E1D2-7C4B-4E9A-B2D3-5F6A8C9E1D4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.Tests", "NotificationService.Tests\NotificationService.Tests.csproj", "{A8F9E1D2-7C4B-4E9A-B2D3-5F6A8C9E1D4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A. Solution Items", "A. Solution Items", "{87B6187F-1161-458F-99AB-ECD0A5FD39CD}"
 	ProjectSection(SolutionItems) = preProject
@@ -31,9 +29,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A. Solution Items", "A. Sol
 		CLAUDE.md = CLAUDE.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerApi", "InfrastructureServices\CustomerApi\CustomerApi.csproj", "{4AC37E0B-5C06-4B42-B2D4-C0D169F665FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerApi", "CustomerApi\CustomerApi.csproj", "{4AC37E0B-5C06-4B42-B2D4-C0D169F665FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerService.Tests", "InfrastructureServices\LedgerService.Tests\LedgerService.Tests.csproj", "{2549C33B-912C-40B2-BD59-C9EA2502A50E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerService.Tests", "LedgerService.Tests\LedgerService.Tests.csproj", "{2549C33B-912C-40B2-BD59-C9EA2502A50E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -187,10 +185,5 @@ Global
 		{BC7287C9-7263-47FC-89AA-B66155B29BAA} = {6F861892-B3A0-4BEA-B131-0D67ADEB9E94}
 		{8FC3A4AA-2ADE-4E3B-B87C-ACBD2A2B3243} = {6F861892-B3A0-4BEA-B131-0D67ADEB9E94}
 		{D4F7B3C1-8E2A-4D9C-A7F1-3C5E8D2F9A4B} = {6F861892-B3A0-4BEA-B131-0D67ADEB9E94}
-		{8A5C607A-DB3F-4483-8622-F6A34415AACF} = {46AA9E2C-4DE1-4410-993B-BB42808D321A}
-		{5EA322F7-FCB8-44B8-860E-61C571CAD28A} = {46AA9E2C-4DE1-4410-993B-BB42808D321A}
-		{A8F9E1D2-7C4B-4E9A-B2D3-5F6A8C9E1D4F} = {46AA9E2C-4DE1-4410-993B-BB42808D321A}
-		{4AC37E0B-5C06-4B42-B2D4-C0D169F665FF} = {46AA9E2C-4DE1-4410-993B-BB42808D321A}
-		{2549C33B-912C-40B2-BD59-C9EA2502A50E} = {46AA9E2C-4DE1-4410-993B-BB42808D321A}
 	EndGlobalSection
 EndGlobal
