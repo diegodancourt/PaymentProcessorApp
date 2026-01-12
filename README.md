@@ -559,7 +559,7 @@ MIT License - see LICENSE file for details
 
 For questions or issues:
 - Create an issue in the repository
-- Contact: [Your contact information]
+- Contact: diego@dancourt.org
 
 ## Acknowledgments
 
