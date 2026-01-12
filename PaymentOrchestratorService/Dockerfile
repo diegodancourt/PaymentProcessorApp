@@ -1,21 +1,23 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 USER $APP_UID
 WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["PaymentProcessorApp/PaymentProcessorApp.csproj", "PaymentProcessorApp/"]
-RUN dotnet restore "PaymentProcessorApp/PaymentProcessorApp.csproj"
+COPY ["PaymentOrchestratorService/PaymentOrchestratorService.csproj", "PaymentOrchestratorService/"]
+RUN dotnet restore "PaymentOrchestratorService/PaymentOrchestratorService.csproj"
 COPY . .
-WORKDIR "/src/PaymentProcessorApp"
-RUN dotnet build "./PaymentProcessorApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/PaymentOrchestratorService"
+RUN dotnet build "./PaymentOrchestratorService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./PaymentProcessorApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./PaymentOrchestratorService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PaymentProcessorApp.dll"]
+ENTRYPOINT ["dotnet", "PaymentOrchestratorService.dll"]
