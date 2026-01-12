@@ -66,13 +66,26 @@ This solution implements a microservices architecture with event-driven communic
 ## System Components
 
 ### 1. Payment Orchestrator Service
-**Status:** Placeholder (To be implemented)
-- **Purpose:** Entry point for payment requests
-- **Planned Features:**
-  - REST API endpoints for initiating payments
-  - Payment request validation
-  - Routing to appropriate payment method handlers
-  - Request/response tracking
+**Status:** In Progress  
+- **Purpose:** Entry point for all payment requests (checks, cards, future methods)
+- **Features:**
+  - REST API endpoints for initiating payments (`/api/payments`)
+  - Payment request validation (schema, required fields, anti-fraud checks)
+  - Routes requests to the correct Kafka topic based on payment method
+  - Correlates requests and responses using unique payment IDs
+  - Tracks request/response status for clients
+  - Returns HTTP status and tracking info to clients
+- **Endpoints:**
+  - `POST /api/payments` — Initiate a new payment (accepts check/card/ACH)
+  - `GET /api/payments/{paymentId}` — Get payment status
+- **Kafka Integration:**
+  - Produces to: `check-payment-requests`, `card-payment-requests`
+  - Consumes from: `payment-status` (for status tracking)
+- **Planned Enhancements:**
+  - Authentication/authorization (JWT)
+  - Idempotency for payment requests
+  - API documentation via OpenAPI/Swagger
+  - Distributed tracing and logging
 
 ### 2. Payment Consumer Services
 

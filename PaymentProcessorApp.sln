@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A. Solution Items", "A. Sol
 		.dockerignore = .dockerignore
 		.gitignore = .gitignore
 		CLAUDE.md = CLAUDE.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerApi", "CustomerApi\CustomerApi.csproj", "{4AC37E0B-5C06-4B42-B2D4-C0D169F665FF}"
